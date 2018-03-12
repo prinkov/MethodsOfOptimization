@@ -116,7 +116,7 @@ public class Main extends Application {
                         Duration.millis(10),
                         ae -> {
                             time[2]++;
-                            timeLbl.setText(time[0] + ":" + time[1] + ":" + time[2] + "");
+                            timeLbl.setText(time[0] + ":" + time[1] + ":" +  time[2] * 10 + "");
                         }
                 )
         );
@@ -249,7 +249,7 @@ public class Main extends Application {
                             str.append("Минимальное значение функции fmin = "+ f.calculate(min) +"\n");
                             str.append("В точке arg(fmin)= " + Arrays.toString(min) + "\n");
                             str.append("Время выполнения алгоритма " + time[0] + " мин., "+
-                                    time[1] + " сек., " + time[2] + " мс. \n");
+                                    time[1] + " сек., " + time[2]*10 + " мс. \n");
 
                             return null;
                         }
@@ -317,7 +317,7 @@ public class Main extends Application {
                             str.append("Минимальное значение функции fmin = "+ f.calculate(min) +"\n");
                             str.append("В точке arg(fmin)= " + Arrays.toString(min) + "\n");
                             str.append("Время выполнения алгоритма " + time[0] + " мин., "+
-                                    time[1] + " сек., " + time[2] + " мс. \n");
+                                    time[1] + " сек., " + time[2] * 10 + " мс. \n");
 
                             return null;
                         }
