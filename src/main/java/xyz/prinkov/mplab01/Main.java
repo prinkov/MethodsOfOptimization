@@ -91,7 +91,7 @@ public class Main extends Application {
         VBox monteCarloBox = new VBox();
         VBox annealingBox = new VBox();
 
-        monteCarloBox.setAlignment(Pos.CENTER);
+        monteCarloBox.setAlignment(Pos.BOTTOM_CENTER);
 
         monteCarloBox.setPadding(new Insets(10,10,10,10));
 
@@ -137,7 +137,7 @@ public class Main extends Application {
         countDotsMC.setMaxWidth(100);
 
         inputMC.getChildren().addAll(new Label("Число генерируемых точек: "),
-                countDotsMC, startMC);
+                countDotsMC);
         inputMC.setSpacing(5);
         outputMC.setEditable(false);
         monteCarloBox.setSpacing(5);
@@ -145,9 +145,68 @@ public class Main extends Application {
         HBox timeMCBox = new HBox();
         timeMCBox.setAlignment(Pos.CENTER);
 
-        timeMCBox.getChildren().addAll(new Label("Время выполнения: "), timeLbl);
 
-        monteCarloBox.getChildren().addAll(inputMC, timeMCBox, outputMC);
+        monteCarloBox.getChildren().addAll(inputMC, startMC, timeMCBox, outputMC);
+
+        HBox firstLine = new HBox();
+        HBox secondLine = new HBox();
+
+        firstLine.setAlignment(Pos.CENTER);
+        secondLine.setAlignment(Pos.CENTER);
+        firstLine.setSpacing(10);
+        secondLine.setSpacing(10);
+        firstLine.setPadding(new Insets(5));
+        secondLine.setPadding(new Insets(5));
+
+        Label maxTempLbl = new Label("Tmax: ");
+        Label countCycleLbl = new Label("L: ");
+        Label tempDecLbl = new Label("R: ");
+        Label epsLbl = new Label("Eps:     ");
+
+        TextField maxTempTF = new TextField("");
+        TextField countCycleTF = new TextField("");
+        TextField tempDecTF = new TextField("");
+        TextField epsTF = new TextField("");
+
+
+        final Tooltip maxTempTooltip = new Tooltip();
+        final Tooltip countCycleTooltip = new Tooltip();
+        final Tooltip tempDecTooltip = new Tooltip();
+        final Tooltip epsTooltip = new Tooltip();
+        maxTempTooltip.setText("Максимальна температура");
+        countCycleTooltip.setText("Количество циклов");
+        tempDecTooltip.setText("Параметр снижения температуры");
+        epsTooltip.setText("Эпсилон окрестность");
+
+        maxTempLbl.setTooltip(maxTempTooltip);
+        maxTempTF.setTooltip(maxTempTooltip);
+        countCycleLbl.setTooltip(countCycleTooltip);
+        countCycleTF.setTooltip(countCycleTooltip);
+        tempDecLbl.setTooltip(tempDecTooltip);
+        tempDecTF.setTooltip(tempDecTooltip);
+        epsLbl.setTooltip(epsTooltip);
+        epsTF.setTooltip(epsTooltip);
+
+
+        firstLine.getChildren().addAll(
+            maxTempLbl,
+            maxTempTF,
+            countCycleLbl,
+            countCycleTF
+        );
+        secondLine.getChildren().addAll(
+            epsLbl,
+            epsTF,
+            tempDecLbl,
+            tempDecTF
+
+        );
+
+        annealingBox.setAlignment(Pos.BOTTOM_CENTER);
+        annealingBox.setSpacing(5);
+        annealingBox.getChildren().addAll(firstLine, secondLine,
+                new Button("Посчитать"), new TextArea());
+
         startMC.setOnMouseClicked(e-> {
             StringBuffer str = new StringBuffer();
             startMC.setDisable(true);
@@ -207,13 +266,18 @@ public class Main extends Application {
 
         tabMC.setContent(monteCarloBox);
         tabMC.setText("Метод монте карло");
-        tabAS.setContent(new Button("Annealing"));
+        tabAS.setContent(annealingBox);
         tabAS.setText("Метод иммитация отжига");
         tabMC.setClosable(false);
         tabAS.setClosable(false);
         tabPane.getTabs().addAll(tabMC, tabAS);
 
-        vboxMain.getChildren().addAll(varSc, tabPane);
+        HBox timeBox = new HBox();
+        timeBox.setSpacing(5);
+        timeBox.setAlignment(Pos.CENTER);
+        timeBox.getChildren().addAll(new Label("Время выполнения: "), timeLbl);
+
+        vboxMain.getChildren().addAll(varSc, tabPane, new Separator(),  timeBox);
         tabPane.setTabMinWidth(250);
 
 
@@ -338,7 +402,7 @@ public class Main extends Application {
             super();
             name = varName;
             this.setAlignment(Pos.CENTER);
-            this.setBackground(new Background(new BackgroundFill(Color.WHITE,
+            this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT,
                     CornerRadii.EMPTY, Insets.EMPTY)));
             TeXFormula texFormula = new TeXFormula(varName + " \\in");
             Image t = (SwingFXUtils.toFXImage((BufferedImage)
@@ -384,7 +448,6 @@ public class Main extends Application {
 
             });
             right.setOnMouseClicked(e);
-
 
             this.getChildren().addAll(new
                     ImageView(t),
