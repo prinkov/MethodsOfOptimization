@@ -163,10 +163,10 @@ public class Main extends Application {
         Label tempDecLbl = new Label("R: ");
         Label epsLbl = new Label("Eps:     ");
 
-        TextField maxTempTF = new TextField("");
-        TextField countCycleTF = new TextField("");
-        TextField tempDecTF = new TextField("");
-        TextField epsTF = new TextField("");
+        TextField maxTempTF = new TextField("1000000");
+        TextField countCycleTF = new TextField("70");
+        TextField tempDecTF = new TextField("0.9");
+        TextField epsTF = new TextField("0.01");
 
 
         final Tooltip maxTempTooltip = new Tooltip();
@@ -202,14 +202,19 @@ public class Main extends Application {
 
         );
 
+        Button startA = new Button("Посчитать");
+
+        TextArea outA = new TextArea();
+
         annealingBox.setAlignment(Pos.BOTTOM_CENTER);
         annealingBox.setSpacing(5);
-        annealingBox.getChildren().addAll(firstLine, secondLine,
-                new Button("Посчитать"), new TextArea());
+        annealingBox.getChildren().addAll(firstLine, secondLine, startA,
+                outA);
 
         startMC.setOnMouseClicked(e-> {
             StringBuffer str = new StringBuffer();
             startMC.setDisable(true);
+            startA.setDisable(true);
             Service<Void> service = new Service<Void>() {
                 @Override
                 protected Task<Void> createTask() {
@@ -255,7 +260,76 @@ public class Main extends Application {
             service.start();
             service.setOnSucceeded(ee-> {
                 startMC.setDisable(false);
+                startA.setDisable(false);
                 outputMC.setText(str.toString());
+            });
+
+        });
+
+        startA.setOnMouseClicked(e-> {
+            StringBuffer str = new StringBuffer();
+            startMC.setDisable(true);
+            startA.setDisable(true);
+            Service<Void> service = new Service<Void>() {
+                @Override
+                protected Task<Void> createTask() {
+                    timeLbl.setText("0:0:0");
+                    outputMC.setText("");
+
+                    return new Task<Void>() {
+                        @Override
+                        protected Void call() throws Exception {
+
+                            time[0] = 0;
+                            time[1] = 0;
+                            time[2] = 0;
+
+                            Function f = new Function(targetFText.getText());
+
+
+                            Annealing ann = new Annealing();
+
+
+
+                            Annealing.Tmax = Float.parseFloat(maxTempTF.getText());
+//
+                            Annealing.eps = Float.parseFloat(epsTF.getText());
+                            Annealing.r = Float.parseFloat(tempDecTF.getText());
+                            Annealing.L = Integer.parseInt(countCycleTF.getText());
+
+                            System.out.println(vars);
+                            System.out.println(f.toString());
+
+                            Annealing.a = new double[vars.size()];
+                            Annealing.b = new double[vars.size()];
+
+
+                            for(int i = 0; i < vars.size(); i ++) {
+                                Annealing.a[i] = vars.get(i).leftValue;
+                                Annealing.b[i] = vars.get(i).rightValue;
+
+                            }
+
+
+                            timeline.play();
+                            double[] min = ann.min(f);
+                            timeline.stop();
+                            str.append("Минимальное значение функции fmin = "+ f.calculate(min) +"\n");
+                            str.append("В точке arg(fmin)= " + Arrays.toString(min) + "\n");
+                            str.append("Время выполнения алгоритма " + time[0] + " мин., "+
+                                    time[1] + " сек., " + time[2] + " мс. \n");
+
+                            return null;
+                        }
+                    };
+
+                }
+            };
+            service.start();
+            service.setOnSucceeded(ee-> {
+                startMC.setDisable(false);
+                startA.setDisable(false);
+                outA.setText(str.toString());
             });
 
         });
