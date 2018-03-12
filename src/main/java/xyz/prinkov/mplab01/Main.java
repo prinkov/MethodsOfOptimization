@@ -17,7 +17,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.mariuszgromada.math.mxparser.Function;
@@ -25,11 +24,8 @@ import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Vector;
 
 public class Main extends Application {
     static public  ArrayList<VarBox> vars;
@@ -171,6 +167,18 @@ public class Main extends Application {
                             Function f = new Function(targetFText.getText());
                             MonteCarlo mc = new MonteCarlo();
                             MonteCarlo.N = Integer.parseInt(countDotsMC.getText());
+
+                            MonteCarlo.a = new double[vars.size()];
+                            MonteCarlo.b = new double[vars.size()];
+
+                            for(int i = 0; i < vars.size(); i ++) {
+                                MonteCarlo.a[i] = vars.get(i).leftValue;
+                                MonteCarlo.b[i] = vars.get(i).rightValue;
+                            }
+
+                            System.out.println(Arrays.toString(MonteCarlo.a));
+                            System.out.println(Arrays.toString(MonteCarlo.b));
+
                             timeline.play();
                             double[] min = mc.min(f);
                             timeline.stop();
@@ -366,8 +374,15 @@ public class Main extends Application {
             };
 
             left.setOnKeyReleased(e);
+            left.setOnKeyReleased(e2->{
+                leftValue = Double.parseDouble(left.getText());
+            });
             left.setOnMouseClicked(e);
             right.setOnKeyReleased(e);
+            right.setOnKeyReleased(e2->{
+                rightValue = Double.parseDouble(right.getText());
+
+            });
             right.setOnMouseClicked(e);
 
 

@@ -11,9 +11,9 @@ import java.util.Random;
 
 public class MonteCarlo extends Method {
     public static int N = 1000000;
-
-    int a = -5;
-    int b = 5;
+    public static int numDothsPerThread = 5000;
+    public static double[] a;
+    public static double[] b;
 
     Random rnd = new Random();
 
@@ -21,12 +21,15 @@ public class MonteCarlo extends Method {
     public double[] min(Function f) {
 
         double minValue = Double.POSITIVE_INFINITY;
-        double[] doth = null;
         double curValue = 0;
 
         Scope scope = Scope.create();
         Variable[] vars = new Variable[f.getArgumentsNumber()];
         double answer[] = new double[vars.length];
+        double[][] doth = new double[vars.length][];
+
+//        MonteCarlo.a = new double[]{-5, -5};
+//        MonteCarlo.b = new double[]{5, 5};
 
 
         for(int i = 0; i < vars.length; i++)
@@ -43,16 +46,16 @@ public class MonteCarlo extends Method {
 
         int varsLength = vars.length;
 
-        int numDothsPerThread = 5000;
         int numDothsPTForCycle = numDothsPerThread - varsLength;
         int numIterate = N / numDothsPerThread;
 
         for(int i = 0; i < numIterate; i++) {
-            doth = rnd.doubles(numDothsPerThread,-5 ,5).toArray();
+            for(int z = 0; z < varsLength; z++)
+                doth[z] = rnd.doubles(numDothsPerThread, a[z], b[z]).toArray();
 
-            for(int j = 0; j < numDothsPerThread; j += varsLength) {
+            for(int j = 0; j < numDothsPTForCycle; j += varsLength) {
                 for(int k = j; k < j + vars.length; k++)
-                    vars[k-j].setValue(doth[k]);
+                    vars[k-j].setValue(doth[k-j][k]);
 
                 curValue = expr.evaluate();
                 if (curValue < minValue) {
