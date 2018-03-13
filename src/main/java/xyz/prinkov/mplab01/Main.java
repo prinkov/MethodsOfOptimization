@@ -345,9 +345,9 @@ public class Main extends Application {
         Tab tabAS =new Tab();
 
         tabMC.setContent(monteCarloBox);
-        tabMC.setText("Метод монте карло");
+        tabMC.setText("Метод Монте-Карло");
         tabAS.setContent(annealingBox);
-        tabAS.setText("Метод иммитация отжига");
+        tabAS.setText("Метод имитация отжига");
         tabMC.setClosable(false);
         tabAS.setClosable(false);
         tabPane.getTabs().addAll(tabMC, tabAS);
