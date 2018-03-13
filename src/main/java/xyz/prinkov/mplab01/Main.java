@@ -20,6 +20,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.mariuszgromada.math.mxparser.Function;
+import org.omg.CORBA.TRANSIENT;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 
@@ -32,6 +33,9 @@ public class Main extends Application {
     static public ProgressIndicator pbMC;
     static  Font mainFont = Font.font("Monaco", FontWeight.BOLD, 22);
     static VBox variables;
+    static java.awt.Color TRANSPARENT = new java.awt.Color(0,0,0,0 );
+
+
 
     public static void main(String[] args) {
         launch(args);
@@ -45,16 +49,17 @@ public class Main extends Application {
         targetFText.setText("f(x, y) = 4*x^2 - 2.1*x^4 +x^6/3 + x*y-4*y^2+4*y^4");
         TeXFormula texFormula = new TeXFormula("\\to \\min");
         Image t = (SwingFXUtils.toFXImage((BufferedImage) texFormula.createBufferedImage(TeXConstants.STYLE_DISPLAY, 30,
-                java.awt.Color.BLACK, java.awt.Color.WHITE), null));
+                java.awt.Color.BLACK, TRANSPARENT), null));
 
         VBox vboxMain = new VBox();
 
         vboxMain.setSpacing(15);
         vboxMain.setPadding(new Insets(5,5,5,5));
-        vboxMain.setBackground(new Background(new BackgroundFill(Color.WHITE,
-                CornerRadii.EMPTY, Insets.EMPTY)));
+//        vboxMain.setBackground(new Background(new BackgroundFill(Color.WHITE,
+//                CornerRadii.EMPTY, Insets.EMPTY)));
 
         HBox functionLine = new HBox();
+//        Image okImage = new Image(Thread.currentThread().getContextClassLoader().getClass().getResourceAsStream("information.png"));
         functionLine.setAlignment(Pos.CENTER);
         functionLine.setSpacing(0);
         functionLine.setFillHeight(true);
@@ -70,11 +75,11 @@ public class Main extends Application {
 
         variables = new VBox();
         varSc.setContent(variables);
-        varSc.setBackground(new Background(new BackgroundFill(Color.WHITE,
-                CornerRadii.EMPTY, Insets.EMPTY)));
+//        varSc.setBackground(new Background(new BackgroundFill(Color.WHITE,
+//                CornerRadii.EMPTY, Insets.EMPTY)));
         variables.setAlignment(Pos.CENTER);
-        variables.setBackground(new Background(new BackgroundFill(Color.WHITE,
-                CornerRadii.EMPTY, Insets.EMPTY)));
+//        variables.setBackground(new Background(new BackgroundFill(Color.WHITE,
+//                CornerRadii.EMPTY, Insets.EMPTY)));
 
 
 
@@ -205,6 +210,7 @@ public class Main extends Application {
         Button startA = new Button("Посчитать");
 
         TextArea outA = new TextArea();
+        outA.setDisable(true);
 
         annealingBox.setAlignment(Pos.BOTTOM_CENTER);
         annealingBox.setSpacing(5);
@@ -474,6 +480,8 @@ public class Main extends Application {
 
         public VarBox(String varName) {
             super();
+
+
             name = varName;
             this.setAlignment(Pos.CENTER);
             this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT,
@@ -481,7 +489,7 @@ public class Main extends Application {
             TeXFormula texFormula = new TeXFormula(varName + " \\in");
             Image t = (SwingFXUtils.toFXImage((BufferedImage)
                     texFormula.createBufferedImage(TeXConstants.STYLE_DISPLAY, 30,
-                    java.awt.Color.BLACK, java.awt.Color.WHITE), null));
+                    java.awt.Color.BLACK, TRANSPARENT), null));
             Label dotcom = new Label(";");
 
             dotcom.setFont(mainFont);

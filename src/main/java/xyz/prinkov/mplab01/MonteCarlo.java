@@ -10,8 +10,8 @@ import parsii.tokenizer.ParseException;
 import java.util.Random;
 
 public class MonteCarlo extends Method {
-    public static int N = 1000000;
-    public static int numDothsPerThread = 5000;
+    public static long N = 1000000;
+    public static long numDothsPerThread = 5000;
     public static double[] a;
     public static double[] b;
 
@@ -19,7 +19,6 @@ public class MonteCarlo extends Method {
 
     @Override
     public double[] min(Function f) {
-
         double minValue = Double.POSITIVE_INFINITY;
         double curValue = 0;
 
@@ -30,7 +29,6 @@ public class MonteCarlo extends Method {
 
 //        MonteCarlo.a = new double[]{-5, -5};
 //        MonteCarlo.b = new double[]{5, 5};
-
 
         for(int i = 0; i < vars.length; i++)
             vars[i] = scope.getVariable(f.getArgument(i).getArgumentName());
@@ -46,10 +44,10 @@ public class MonteCarlo extends Method {
 
         int varsLength = vars.length;
 
-        int numDothsPTForCycle = numDothsPerThread - varsLength;
-        int numIterate = N / numDothsPerThread;
+        long numDothsPTForCycle = numDothsPerThread - varsLength;
+        long numIterate = N / numDothsPerThread;
 
-        for(int i = 0; i < numIterate; i++) {
+        for(long i = 0; i < numIterate; i++) {
             for(int z = 0; z < varsLength; z++)
                 doth[z] = rnd.doubles(numDothsPerThread, a[z], b[z]).toArray();
 
@@ -65,7 +63,6 @@ public class MonteCarlo extends Method {
                 }
             }
         }
-
         return answer;
     }
 }
