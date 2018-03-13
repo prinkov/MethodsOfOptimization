@@ -33,7 +33,7 @@ public class Main extends Application {
     static public ProgressIndicator pbMC;
     static  Font mainFont = Font.font("Monaco", FontWeight.BOLD, 22);
     static VBox variables;
-    static java.awt.Color TRANSPARENT = new java.awt.Color(0,0,0,0 );
+    static java.awt.Color TRANSPARENT = java.awt.Color.WHITE;
 
 
 
@@ -55,8 +55,8 @@ public class Main extends Application {
 
         vboxMain.setSpacing(15);
         vboxMain.setPadding(new Insets(5,5,5,5));
-//        vboxMain.setBackground(new Background(new BackgroundFill(Color.WHITE,
-//                CornerRadii.EMPTY, Insets.EMPTY)));
+        vboxMain.setBackground(new Background(new BackgroundFill(Color.WHITE,
+                CornerRadii.EMPTY, Insets.EMPTY)));
 
         HBox functionLine = new HBox();
 //        Image okImage = new Image(Thread.currentThread().getContextClassLoader().getClass().getResourceAsStream("information.png"));
@@ -75,11 +75,11 @@ public class Main extends Application {
 
         variables = new VBox();
         varSc.setContent(variables);
-//        varSc.setBackground(new Background(new BackgroundFill(Color.WHITE,
-//                CornerRadii.EMPTY, Insets.EMPTY)));
+        varSc.setBackground(new Background(new BackgroundFill(Color.WHITE,
+                CornerRadii.EMPTY, Insets.EMPTY)));
         variables.setAlignment(Pos.CENTER);
-//        variables.setBackground(new Background(new BackgroundFill(Color.WHITE,
-//                CornerRadii.EMPTY, Insets.EMPTY)));
+        variables.setBackground(new Background(new BackgroundFill(Color.WHITE,
+                CornerRadii.EMPTY, Insets.EMPTY)));
 
 
 
@@ -210,7 +210,7 @@ public class Main extends Application {
         Button startA = new Button("Посчитать");
 
         TextArea outA = new TextArea();
-        outA.setDisable(true);
+        outA.setEditable(true);
 
         annealingBox.setAlignment(Pos.BOTTOM_CENTER);
         annealingBox.setSpacing(5);
