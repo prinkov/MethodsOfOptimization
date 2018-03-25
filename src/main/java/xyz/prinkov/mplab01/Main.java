@@ -59,7 +59,6 @@ public class Main extends Application {
                 CornerRadii.EMPTY, Insets.EMPTY)));
 
         HBox functionLine = new HBox();
-//        Image okImage = new Image(Thread.currentThread().getContextClassLoader().getClass().getResourceAsStream("information.png"));
         functionLine.setAlignment(Pos.CENTER);
         functionLine.setSpacing(0);
         functionLine.setFillHeight(true);
@@ -95,6 +94,7 @@ public class Main extends Application {
         TabPane tabPane = new TabPane();
         VBox monteCarloBox = new VBox();
         VBox annealingBox = new VBox();
+        VBox geneticBox = new VBox();
 
         monteCarloBox.setAlignment(Pos.BOTTOM_CENTER);
 
@@ -212,15 +212,57 @@ public class Main extends Application {
         TextArea outA = new TextArea();
         outA.setEditable(true);
 
+
         annealingBox.setAlignment(Pos.BOTTOM_CENTER);
         annealingBox.setSpacing(5);
         annealingBox.getChildren().addAll(firstLine, secondLine, startA,
                 outA);
 
+
+        geneticBox.setAlignment(Pos.BOTTOM_CENTER);
+        geneticBox.setSpacing(5);
+        Button startG = new Button("Посчитать");
+        TextArea outG = new TextArea();
+        outG.setEditable(true);
+
+        HBox firstG = new HBox();
+        firstG.setAlignment(Pos.CENTER);
+        firstG.setPadding(new Insets(10));
+        firstG.setSpacing(10);
+
+        HBox secondG = new HBox();
+        secondG.setAlignment(Pos.CENTER);
+        secondG.setPadding(new Insets(10));
+        secondG.setSpacing(10);
+
+        TextField numOfEpoch = new TextField("200");
+        TextField sizePop = new TextField("60");
+        TextField prob = new TextField("0.1");
+        numOfEpoch.setMaxWidth(100);
+        sizePop.setMaxWidth(100);
+        prob.setMaxWidth(100);
+
+        firstG.getChildren().addAll(
+                new Label("Количество эпох:"),
+                numOfEpoch,
+                new Label(" Размер популяции: "),
+                sizePop
+                );
+
+        secondG.getChildren().addAll(
+                new Label(" Вероятность мутации: "), prob);
+
+        geneticBox.getChildren().addAll(
+                firstG,
+                secondG,
+                startG,
+                outG);
+
         startMC.setOnMouseClicked(e-> {
             StringBuffer str = new StringBuffer();
             startMC.setDisable(true);
             startA.setDisable(true);
+            startG.setDisable(true);
             Service<Void> service = new Service<Void>() {
                 @Override
                 protected Task<Void> createTask() {
@@ -267,6 +309,7 @@ public class Main extends Application {
             service.setOnSucceeded(ee-> {
                 startMC.setDisable(false);
                 startA.setDisable(false);
+                startG.setDisable(false);
                 outputMC.setText(str.toString());
             });
 
@@ -276,11 +319,12 @@ public class Main extends Application {
             StringBuffer str = new StringBuffer();
             startMC.setDisable(true);
             startA.setDisable(true);
+            startG.setDisable(true);
             Service<Void> service = new Service<Void>() {
                 @Override
                 protected Task<Void> createTask() {
                     timeLbl.setText("0:0:0");
-                    outputMC.setText("");
+                    outA.setText("");
 
                     return new Task<Void>() {
                         @Override
@@ -335,7 +379,73 @@ public class Main extends Application {
             service.setOnSucceeded(ee-> {
                 startMC.setDisable(false);
                 startA.setDisable(false);
+                startG.setDisable(false);
                 outA.setText(str.toString());
+            });
+
+        });
+
+        startG.setOnMouseClicked(e-> {
+            StringBuffer str = new StringBuffer();
+            startMC.setDisable(true);
+            startA.setDisable(true);
+            startG.setDisable(true);
+            Service<Void> service = new Service<Void>() {
+                @Override
+                protected Task<Void> createTask() {
+                    timeLbl.setText("0:0:0");
+                    outG.setText("");
+
+                    return new Task<Void>() {
+                        @Override
+                        protected Void call() throws Exception {
+
+                            time[0] = 0;
+                            time[1] = 0;
+                            time[2] = 0;
+
+                            Function f = new Function(targetFText.getText());
+
+                            Genetic genetic = new Genetic();
+
+
+
+                            Genetic.a = new double[vars.size()];
+                            Genetic.b = new double[vars.size()];
+
+
+                            for(int i = 0; i < vars.size(); i ++) {
+                                Genetic.a[i] = vars.get(i).leftValue;
+                                Genetic.b[i] = vars.get(i).rightValue;
+                            }
+
+
+
+                            Genetic.numOfEpoch = Integer.parseInt(numOfEpoch.getText());
+                            Genetic.k = Integer.parseInt(sizePop.getText());
+                            Genetic.probMutation = Double.parseDouble(prob.getText());
+                            System.out.println("hui");
+
+                            timeline.play();
+                            double[] min = genetic.min(f);
+                            timeline.stop();
+                            str.append("Минимальное значение функции fmin = "+ f.calculate(min) +"\n");
+                            str.append("В точке arg(fmin)= " + Arrays.toString(min) + "\n");
+                            str.append("Время выполнения алгоритма " + time[0] + " мин., "+
+                                    time[1] + " сек., " + time[2] * 10 + " мс. \n");
+
+                            return null;
+                        }
+                    };
+
+                }
+            };
+            service.start();
+            service.setOnSucceeded(ee-> {
+                startMC.setDisable(false);
+                startA.setDisable(false);
+                startG.setDisable(false);
+                outG.setText(str.toString());
             });
 
         });
@@ -343,14 +453,18 @@ public class Main extends Application {
 
         Tab tabMC = new Tab();
         Tab tabAS =new Tab();
+        Tab tabG =new Tab();
 
         tabMC.setContent(monteCarloBox);
         tabMC.setText("Метод Монте-Карло");
         tabAS.setContent(annealingBox);
         tabAS.setText("Метод имитация отжига");
+        tabG.setContent(geneticBox);
+        tabG.setText("Генетические алгоритмы");
         tabMC.setClosable(false);
         tabAS.setClosable(false);
-        tabPane.getTabs().addAll(tabMC, tabAS);
+        tabG.setClosable(false);
+        tabPane.getTabs().addAll(tabMC, tabAS, tabG);
 
         HBox timeBox = new HBox();
         timeBox.setSpacing(5);
@@ -364,13 +478,12 @@ public class Main extends Application {
         Scene scene = new Scene(vboxMain);
 
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
-            tabPane.setTabMinWidth(newValue.floatValue() / 2.0 - 30);
-            tabPane.setTabMaxWidth(newValue.floatValue() / 2.0 - 30);
-//            pbMC.setMinWidth(newValue.floatValue() - 50);
+            tabPane.setTabMinWidth(newValue.floatValue() / 3.0 - 30);
+            tabPane.setTabMaxWidth(newValue.floatValue() / 3.0 - 30);
         };
 
         stage.widthProperty().addListener(stageSizeListener);
-
+        vboxMain.setMaxWidth(600);
         stage.setScene(scene);
         stage.sizeToScene();
         stage.show();

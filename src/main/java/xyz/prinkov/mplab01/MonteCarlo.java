@@ -27,9 +27,6 @@ public class MonteCarlo extends Method {
         double answer[] = new double[vars.length];
         double[][] doth = new double[vars.length][];
 
-//        MonteCarlo.a = new double[]{-5, -5};
-//        MonteCarlo.b = new double[]{5, 5};
-
         for(int i = 0; i < vars.length; i++)
             vars[i] = scope.getVariable(f.getArgument(i).getArgumentName());
 

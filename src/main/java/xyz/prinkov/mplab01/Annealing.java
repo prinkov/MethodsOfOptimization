@@ -48,10 +48,9 @@ public class Annealing extends Method {
             vars[i] = rnd.nextDouble() * Math.abs(a[i] - b[i]) + a[i];
             varsV[i] = scope.getVariable(f.getArgument(i).getArgumentName());
         }
-        while (Tmax > 0 + 0.00000001) {
+        while (Tmax > 0 + 0.0000000001) {
             for(int i = 0; i < L; i++) {
                 for(int z = 0; z < vars.length; z++) {
-//                    varss[z] = vars[z] - eps + rnd.nextDouble() * 2 * eps;
                     varss[z] = vars[z] + rnd.nextDouble() * eps - rnd.nextDouble() * eps;
                     if(varss[z] < a[z])
                         varss[z] = a[z];
@@ -71,13 +70,13 @@ public class Annealing extends Method {
 
                 delta = f2 - f1;
 
+
                 if (delta <= 0 || Math.exp(-delta / Tmax) > rnd.nextDouble())
                     for(int k = 0; k < vars.length; k++)
                         vars[k] = varss[k];
             }
             Tmax *= r;
         }
-
         double h = 0.01;
         double[] varsModify = new double[varsLength];
         for (int i = 0; i < varsLength; i++) {
