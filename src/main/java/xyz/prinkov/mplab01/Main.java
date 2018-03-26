@@ -235,8 +235,8 @@ public class Main extends Application {
         secondG.setPadding(new Insets(10));
         secondG.setSpacing(10);
 
-        TextField numOfEpoch = new TextField("200");
-        TextField sizePop = new TextField("60");
+        TextField numOfEpoch = new TextField("3000");
+        TextField sizePop = new TextField("320");
         TextField prob = new TextField("0.1");
         numOfEpoch.setMaxWidth(100);
         sizePop.setMaxWidth(100);

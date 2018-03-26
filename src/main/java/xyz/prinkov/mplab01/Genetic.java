@@ -141,7 +141,7 @@ public class Genetic extends Method {
 
     int getRandomResult(double prob[]) {
         double coin = rnd.nextDouble();
-        double sum = 0.000001;
+        double sum = 0.00000;
         int index = 0;
         while(sum < coin)
             sum += prob[index++];
