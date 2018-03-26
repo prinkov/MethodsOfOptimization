@@ -424,10 +424,14 @@ public class Main extends Application {
                             Genetic.numOfEpoch = Integer.parseInt(numOfEpoch.getText());
                             Genetic.k = Integer.parseInt(sizePop.getText());
                             Genetic.probMutation = Double.parseDouble(prob.getText());
-                            System.out.println("hui");
 
                             timeline.play();
-                            double[] min = genetic.min(f);
+                            double[] min = null;
+                            try {
+                                min = genetic.min(f);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
                             timeline.stop();
                             str.append("Минимальное значение функции fmin = "+ f.calculate(min) +"\n");
                             str.append("В точке arg(fmin)= " + Arrays.toString(min) + "\n");

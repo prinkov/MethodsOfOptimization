@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.DoubleStream;
 
+
 public class Genetic extends Method {
     public static int k;
     public static int numOfEpoch;
@@ -62,14 +63,13 @@ public class Genetic extends Method {
 
 
         for(int epoch = 0; epoch < numOfEpoch; epoch++) {
-            System.out.println("Num of epoch" + epoch);
             Arrays.parallelSort(population);
             population = Arrays.copyOfRange(population, 0, k);
             double[] probability =
                     getProbabilityForReproductation(expr, vars, population);
-
             population = ArrayUtils.addAll(population, reproduction(population, probability));
-            Arrays.stream(population).forEach(o -> o.mutation(probMutation));
+
+//            Arrays.stream(population).forEach(o -> o.mutation(probMutation));
         }
 
         getProbabilityForReproductation(expr, vars, population);
@@ -82,7 +82,6 @@ public class Genetic extends Method {
                                                   Individual[] population
                                                   ) {
         double[] fxi = new double[population.length];
-        double fmax_ = Double.NEGATIVE_INFINITY;
         double[] probabilityReproductation = new double[population.length];
 
         double[] mbdot_min = population[0].getValue();
@@ -102,6 +101,13 @@ public class Genetic extends Method {
 
         final double fmax = exp.evaluate();
 
+        for(int k = 0; k < population.length; k++) {
+            double[] varValue = population[k].getValue();
+            for(int i = 0; i < vars.length; i++)
+                vars[i].setValue(varValue[i]);
+            fxi[k] = exp.evaluate();
+        }
+
         double fmaxMinusFi  = DoubleStream.of(fxi).mapToObj(e -> e = (fmax - e + 1)).
                 mapToDouble(Double::valueOf).
                 sum();
@@ -115,7 +121,6 @@ public class Genetic extends Method {
 
     private Individual[] reproduction(Individual[] population, double[] probability) {
         Individual[] children = new Individual[population.length / 2];
-
         for(int i = 0; i < children.length; i++) {
             int one = getRandomResult(probability);
             int two;
@@ -123,8 +128,12 @@ public class Genetic extends Method {
             while((two = getRandomResult(probability)) == one)
                 if(controlIndex++ > 100)
                     break;
-            children[i] =
-                    Individual.coition(population[one], population[two]);
+            try {
+                children[i] =
+                        Individual.coition(population[one], population[two]);
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                ex.printStackTrace();
+            }
         }
 
         return children;
@@ -132,10 +141,11 @@ public class Genetic extends Method {
 
     int getRandomResult(double prob[]) {
         double coin = rnd.nextDouble();
-        double sum = 0.00001;
+        double sum = 0.000001;
         int index = 0;
         while(sum < coin)
             sum += prob[index++];
-        return index - 1;
+//        System.out.println(index-1);
+        return index-1;
     }
 }
