@@ -26,8 +26,6 @@ public class Genetic extends Method {
     double[] dot_min;
     double fmin= Double.POSITIVE_INFINITY;
 
-
-
     @Override
     public double[] min(Function f) {
         Individual.a = a;

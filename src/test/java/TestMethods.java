@@ -1,9 +1,7 @@
 import org.junit.Test;
 import org.mariuszgromada.math.mxparser.Function;
-import xyz.prinkov.mplab01.Annealing;
-import xyz.prinkov.mplab01.Genetic;
-import xyz.prinkov.mplab01.Method;
-import xyz.prinkov.mplab01.MonteCarlo;
+import parsii.tokenizer.ParseException;
+import xyz.prinkov.mplab01.*;
 import xyz.prinkov.mplab01.genetic.Individual;
 
 import java.util.Arrays;
@@ -17,11 +15,15 @@ public class TestMethods {
     }
 
     @Test
-    public void testMC()  {
+    public void testMC() throws ParseException {
+        MonteCarlo.a = new double[]{-5, -5};
+        MonteCarlo.b = new double[]{5, 5};
         method = new MonteCarlo();
         Function f =
                 new Function("f(x, y) = 4*x^2 - 2.1*x^4 +x^6/3 + x*y-4*y^2+4*y^4");
-        System.out.println(method.min(f));
+        double[] answer = method.min(f);
+        System.out.println(Arrays.toString(answer));
+        System.out.println(f.calculate(answer));
     }
 
     @Test
@@ -30,7 +32,7 @@ public class TestMethods {
     }
 
     @Test
-    public void testA() {
+    public void testA() throws ParseException {
         method = new Annealing();
         Annealing.a = new double[]{-5,-5};
         Annealing.b = new double[]{5,5};
@@ -52,6 +54,22 @@ public class TestMethods {
         double[] answer = genetic.min(f);
         System.out.println(Arrays.toString(answer));
         System.out.println(f.calculate(answer));
+    }
 
+    @Test
+    public void testInterval() throws ParseException {
+        Interval interval = new Interval();
+        Interval.a = new double[]{-50, -50};
+        Interval.b = new double[]{50, 50};
+//        Function f =
+//                new Function("f(x, y) = 4 * x^2 - 2.1 * x^4 +" +
+//                        " x^6 / 3 + x * y - 4 * y^2 + 4 * y^4");
+         Function f =
+                new Function("f(x,y) = 0.26*(x^2+y^2) -0.48*x*y");
+
+        double[] answer = interval.min(f);
+
+        System.out.println(Arrays.toString(answer));
+        System.out.println(f.calculate(answer));
     }
 }

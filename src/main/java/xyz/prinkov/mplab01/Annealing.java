@@ -102,9 +102,7 @@ public class Annealing extends Method {
                     varsModify[i] = vars[i];
             }
         }
-        System.out.println(f.calculate(vars));
 
-        System.out.println(f.calculate(varsModify));
         return varsModify;
     }
 
