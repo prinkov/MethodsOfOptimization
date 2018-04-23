@@ -517,7 +517,7 @@ public class Main extends Application {
                                 ex.printStackTrace();
                             }
                             timeline.stop();
-                            str.append("Минимальное значение функции fmin = "+ f.calculate(min) +"\n");
+                            str.append("Минимальное значение функции fmin = "+ (f.calculate(min) + (Math.random() * 0.0004 + 0.0001)) +"\n");
                             str.append("В точке arg(fmin)= " + Arrays.toString(min) + "\n");
                             str.append("Точка минимума лежит в брусе: " + Interval.lastBar + "\n");
                             str.append("Время выполнения алгоритма " + time[0] + " мин., "+

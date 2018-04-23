@@ -18,8 +18,5 @@ public class GeneticTest {
         System.out.println(Arrays.toString(ind.getValue()));
         ind.setValue(t);
         System.out.println(Arrays.toString(ind.getValue()));
-
-
-
     }
 }
