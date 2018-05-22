@@ -663,7 +663,7 @@ public class Main extends Application {
         tabI.setContent(intervalBox);
         tabI.setText("Интервальный метод");
         tabIG.setContent(intervalGeneticBox);
-        tabIG.setText("Интервально-генетиеский метод");
+        tabIG.setText("Интервальный Монте-Карло");
 
 
         tabMC.setClosable(false);
