@@ -612,7 +612,7 @@ public class Main extends Application {
                             }
 
                             MonteCarlo mc = new MonteCarlo();
-                            MonteCarlo.N = Integer.parseInt(countDotsMC.getText());
+                            MonteCarlo.N = 1000000;
                             MonteCarlo.a = new double[vars.size()];
                             MonteCarlo.b = new double[vars.size()];
                             for(int i = 0; i < vars.size(); i ++) {
