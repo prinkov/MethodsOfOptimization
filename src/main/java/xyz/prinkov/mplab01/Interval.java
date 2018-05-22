@@ -18,6 +18,7 @@ public class Interval extends Method {
     public static Bar lastBar;
     public static double[] a;
     public static double[] b;
+    public static boolean flag = true;
 
     @Override
     public double[] min(Function f) throws ParseException {

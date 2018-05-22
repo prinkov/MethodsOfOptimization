@@ -96,6 +96,7 @@ public class Main extends Application {
         VBox annealingBox = new VBox();
         VBox geneticBox = new VBox();
         VBox intervalBox = new VBox();
+        VBox intervalGeneticBox = new VBox();
 
         monteCarloBox.setAlignment(Pos.BOTTOM_CENTER);
         monteCarloBox.setPadding(new Insets(10,10,10,10));
@@ -276,12 +277,30 @@ public class Main extends Application {
 
         intervalBox.getChildren().addAll(intervalTextLine, startI, outI);
 
+        intervalGeneticBox.setAlignment(Pos.BOTTOM_CENTER);
+        intervalGeneticBox.setSpacing(5);
+        Button startIG = new Button("Посчитать");
+        TextArea outIG = new TextArea();
+        TextField inputEpsIG = new TextField();
+        HBox intervalGTextLine = new HBox();
+        intervalGTextLine.setAlignment(Pos.CENTER);
+        intervalGeneticBox.setSpacing(15);
+        inputEpsIG.setMaxWidth(80);
+        inputEpsIG.setText("0.001");
+
+        intervalGeneticBox.setPadding(new Insets(10,10,10,10));
+
+        intervalGTextLine.getChildren().addAll(new Label("Точность: "), inputEpsIG);
+
+        intervalGeneticBox.getChildren().addAll(intervalGTextLine, startIG, outIG);
+
         startMC.setOnMouseClicked(e-> {
             StringBuffer str = new StringBuffer();
             startMC.setDisable(true);
             startA.setDisable(true);
             startG.setDisable(true);
             startI.setDisable(true);
+            startIG.setDisable(true);
             Service<Void> service = new Service<Void>() {
                 @Override
                 protected Task<Void> createTask() {
@@ -330,6 +349,7 @@ public class Main extends Application {
                 startA.setDisable(false);
                 startG.setDisable(false);
                 startI.setDisable(false);
+                startIG.setDisable(false);
                 outputMC.setText(str.toString());
             });
 
@@ -341,6 +361,7 @@ public class Main extends Application {
             startA.setDisable(true);
             startG.setDisable(true);
             startI.setDisable(true);
+            startIG.setDisable(true);
             Service<Void> service = new Service<Void>() {
                 @Override
                 protected Task<Void> createTask() {
@@ -398,6 +419,7 @@ public class Main extends Application {
                 startA.setDisable(false);
                 startG.setDisable(false);
                 startI.setDisable(false);
+                startIG.setDisable(false);
                 outA.setText(str.toString());
             });
 
@@ -409,6 +431,7 @@ public class Main extends Application {
             startA.setDisable(true);
             startG.setDisable(true);
             startI.setDisable(true);
+            startIG.setDisable(true);
             Service<Void> service = new Service<Void>() {
                 @Override
                 protected Task<Void> createTask() {
@@ -469,6 +492,7 @@ public class Main extends Application {
                 startA.setDisable(false);
                 startG.setDisable(false);
                 startI.setDisable(false);
+                startIG.setDisable(false);
                 outG.setText(str.toString());
             });
 
@@ -480,6 +504,7 @@ public class Main extends Application {
             startA.setDisable(true);
             startG.setDisable(true);
             startI.setDisable(true);
+            startIG.setDisable(true);
             Service<Void> service = new Service<Void>() {
                 @Override
                 protected Task<Void> createTask() {
@@ -508,6 +533,7 @@ public class Main extends Application {
                             }
 
                             Interval.eps = Double.parseDouble(inputEps.getText());
+                            Interval.flag = false;
 
                             timeline.play();
                             double[] min = null;
@@ -517,7 +543,7 @@ public class Main extends Application {
                                 ex.printStackTrace();
                             }
                             timeline.stop();
-                            str.append("Минимальное значение функции fmin = "+ (f.calculate(min) + (Math.random() * 0.0004 + 0.0001)) +"\n");
+                            str.append("Минимальное значение функции fmin = "+ (f.calculate(min)) +"\n");
                             str.append("В точке arg(fmin)= " + Arrays.toString(min) + "\n");
                             str.append("Точка минимума лежит в брусе: " + Interval.lastBar + "\n");
                             str.append("Время выполнения алгоритма " + time[0] + " мин., "+
@@ -535,7 +561,88 @@ public class Main extends Application {
                 startA.setDisable(false);
                 startG.setDisable(false);
                 startI.setDisable(false);
+                startIG.setDisable(false);
                 outI.setText(str.toString());
+            });
+
+        });
+
+        startIG.setOnMouseClicked(e-> {
+            StringBuffer str = new StringBuffer();
+            startMC.setDisable(true);
+            startA.setDisable(true);
+            startG.setDisable(true);
+            startI.setDisable(true);
+            startIG.setDisable(true);
+            Service<Void> service = new Service<Void>() {
+                @Override
+                protected Task<Void> createTask() {
+                    timeLbl.setText("0:0:0");
+                    outputMC.setText("");
+
+                    return new Task<Void>() {
+                        @Override
+                        protected Void call() throws Exception {
+
+                            time[0] = 0;
+                            time[1] = 0;
+                            time[2] = 0;
+                            Function f = new Function(targetFText.getText());
+
+                            Interval interval = new Interval();
+
+                            Interval.a = new double[vars.size()];
+                            Interval.b = new double[vars.size()];
+
+
+                            for(int i = 0; i < vars.size(); i ++) {
+                                Interval.a[i] = vars.get(i).leftValue;
+                                Interval.b[i] = vars.get(i).rightValue;
+                            }
+
+                            Interval.eps = Double.parseDouble(inputEps.getText());
+                            Interval.flag = true;
+
+                            timeline.play();
+                            double[] min = null;
+                            try {
+                                min = interval.min(f);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+
+                            MonteCarlo mc = new MonteCarlo();
+                            MonteCarlo.N = Integer.parseInt(countDotsMC.getText());
+                            MonteCarlo.a = new double[vars.size()];
+                            MonteCarlo.b = new double[vars.size()];
+                            for(int i = 0; i < vars.size(); i ++) {
+                                MonteCarlo.a[i] = Interval.lastBar.getLeftBound()[i];
+                                MonteCarlo.b[i] = Interval.lastBar.getRightBound()[i];
+                            }
+
+                            min = mc.min(f);
+
+                            timeline.play();
+                            timeline.stop();
+                            str.append("Минимальное значение функции fmin = "+ f.calculate(min) +"\n");
+                            str.append("В точке arg(fmin)= " + Arrays.toString(min) + "\n");
+                            str.append("Время выполнения алгоритма " + time[0] + " мин., "+
+                                    time[1] + " сек., " + time[2]*10 + " мс. \n");
+
+                            return null;
+                        }
+                    };
+
+                }
+            };
+            service.start();
+            service.setOnSucceeded(ee-> {
+                startMC.setDisable(false);
+                startA.setDisable(false);
+                startG.setDisable(false);
+                startI.setDisable(false);
+                startIG.setDisable(false);
+                outIG.setText(str.toString());
             });
 
         });
@@ -545,6 +652,7 @@ public class Main extends Application {
         Tab tabAS =new Tab();
         Tab tabG =new Tab();
         Tab tabI =new Tab();
+        Tab tabIG =new Tab();
 
         tabMC.setContent(monteCarloBox);
         tabMC.setText("Метод Монте-Карло");
@@ -554,13 +662,17 @@ public class Main extends Application {
         tabG.setText("Генетические алгоритмы");
         tabI.setContent(intervalBox);
         tabI.setText("Интервальный метод");
+        tabIG.setContent(intervalGeneticBox);
+        tabIG.setText("Интервально-генетиеский метод");
 
 
         tabMC.setClosable(false);
         tabAS.setClosable(false);
         tabG.setClosable(false);
         tabI.setClosable(false);
-        tabPane.getTabs().addAll(tabMC, tabAS, tabG, tabI);
+        tabI.setClosable(false);
+        tabIG.setClosable(false);
+        tabPane.getTabs().addAll(tabMC, tabAS, tabG, tabI, tabIG);
 
         HBox timeBox = new HBox();
         timeBox.setSpacing(5);
